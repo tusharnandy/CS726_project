@@ -1,8 +1,8 @@
 # CS726_project
 
-Progress:
+## Progress
 
-1. The code of independent cascade model is in model-independent-cascade/src/influence.py; the model is not perfect yet. Look at line number 49 and the comment above.
+1. The code of independent cascade model is in model-independent-cascade/src/influence.py; the model is not perfect yet. Look at line number 49 and the comment above it.
 2. The probability of a node being able to activate its neighbor depends on the edge features, which consists of alpha and beta. I've not been able to understand the dimensions of each of them. All I know is that under the setting of our problem, we have to "learn" the edge features simultaneously.
 3. But we also need "ground-truth" values of alpha and beta so that we can run the cascade model. 
 4. There are hints about contructing the ground-truth edge features in the 1st paragraph starting _"Since the  ground-truth diffusion probabilities..."_ right column on page 5 of our paper.
