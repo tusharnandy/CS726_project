@@ -43,7 +43,10 @@ def influence_count(nodes, edges, seeds, threshold):
         for edge in edges:
             if nodes_status[edge[0]] == 1:
                 if nodes_status[edge[1]] == 0:
-                    p = np.array([1 - threshold / in_degree[edge[1]], threshold / in_degree[edge[1]]])
+                    # This probability for a node activating its neighbor is 
+                    # (threshold/in_degree). We have to replace this quantity
+                    # by a function of \alpha and \beta.
+                    p = np.array([1 - threshold / in_degree[edge[1]], threshold / in_degree[edge[1]]]) 
                     flag = np.random.choice([0, 1], p=p.ravel())
                     if flag:
                         new_actived_nodes.append(edge[1])
