@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def influence_count(G, seeds, edges, O):
+def influence_count(G, seeds, edges, O, B):
     ''' Calculate influent result
     Args:
         nodes (list) [#node]: nodes list of the graph;
@@ -15,6 +15,7 @@ def influence_count(G, seeds, edges, O):
     inactive_nodes = []
     active_nodes = []
     nodes_status = {}
+    observed_edges = []
 
     for edge in edges: 
         if edge[0] in seeds:
@@ -33,7 +34,8 @@ def influence_count(G, seeds, edges, O):
     active_nodes = list(set(active_nodes))
     inactive_nodes = list(set(inactive_nodes))
 
-    for node in list(G.nodes()):
+    nodes = list(G.nodes())
+    for node in nodes:
         nodes_status[node] = 0
     for node in active_nodes:
         nodes_status[node] = 1
@@ -43,11 +45,15 @@ def influence_count(G, seeds, edges, O):
         for edge in edges:
             if nodes_status[edge[0]] == 1:
                 if nodes_status[edge[1]] == 0:
+                    index = edges.index((edge[0], edge[1]))
+                    observed_edges.append(index)
+                    O[index] += 1
                     alpha, beta = G.edges[edge]['xt'][:4], G.edges[edge]['xt'][4:]
                     p = (alpha*beta).sum()
                     flag = np.random.choice([0, 1], p=[1-p, p])
                     if flag:
                         new_actived_nodes.append(edge[1])
+                        B[index] += 1
         for node in active_nodes:
             nodes_status[node] = 2
         for node in new_actived_nodes:
@@ -58,4 +64,4 @@ def influence_count(G, seeds, edges, O):
     for node in nodes:
         if nodes_status[node] == 2:
             final_actived_node += 1
-    return final_actived_node  
+    return final_actived_node, observed_edges, O, B
