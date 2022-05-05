@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def influence_count(nodes, edges, seeds, threshold):
+def influence_count(G, seeds, edges, O):
     ''' Calculate influent result
     Args:
         nodes (list) [#node]: nodes list of the graph;
@@ -33,7 +33,7 @@ def influence_count(nodes, edges, seeds, threshold):
     active_nodes = list(set(active_nodes))
     inactive_nodes = list(set(inactive_nodes))
 
-    for node in nodes:
+    for node in list(G.nodes()):
         nodes_status[node] = 0
     for node in active_nodes:
         nodes_status[node] = 1
@@ -43,11 +43,9 @@ def influence_count(nodes, edges, seeds, threshold):
         for edge in edges:
             if nodes_status[edge[0]] == 1:
                 if nodes_status[edge[1]] == 0:
-                    # This probability for a node activating its neighbor is 
-                    # (threshold/in_degree). We have to replace this quantity
-                    # by a function of \alpha and \beta.
-                    p = np.array([1 - threshold / in_degree[edge[1]], threshold / in_degree[edge[1]]]) 
-                    flag = np.random.choice([0, 1], p=p.ravel())
+                    alpha, beta = G.edges[edge]['xt'][:4], G.edges[edge]['xt'][4:]
+                    p = (alpha*beta).sum()
+                    flag = np.random.choice([0, 1], p=[1-p, p])
                     if flag:
                         new_actived_nodes.append(edge[1])
         for node in active_nodes:
